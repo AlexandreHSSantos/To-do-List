@@ -11,7 +11,7 @@
 <body>
     
     <!-- Bloco 1: CABEÇALHO -->
-     <header class="header">
+     <header class="cabecalho">
         <div>
             <h1>To Do Focus</h1>
             <p>As grandes ações acontecem com pequenos passos</p>
@@ -23,8 +23,71 @@
 
         <main>
 
-            <section id="tab-main"></section>
+            <section id="aba-principal" class="aba">
 
+                <section id="cartao-timer" class="cartao">
+                    <p id="tarefa-ativa">Nenhuma tarefa selecionada</p>
+
+                    <div id="visor-timer">25:00</div>
+
+                    <div class="botoes-timer">
+                        <button>Iniciar</button>
+                        <button>Pausar</button>
+                        <button>Zerar</button>
+
+                    </div>
+                </section>
+
+                <section id="cartao-tarefas" class="cartao">
+                    <form id="form-tarefa"></form>
+                    <ul id="lista-tarefas"></ul>
+                </section>
+
+            </section>
+
+            <section id="aba-historico" class="aba">
+
+                <h1>To Do Focus - Histórico</h1>
+                <p>Seus dados de estudos</p>
+                
+                <div id="blocos-dados" class="blocos">
+
+                    <div id="minutos focados">
+                        <p>Minutos Focados</p>
+                        <p>0 min</p>
+                    </div> 
+
+                    <div id="ciclos concluidos">
+                        <p>Ciclos Concluídos</p>
+                        <p>0</p>
+                    </div>
+                    
+                    <div id="tarefas concluídas">
+                        <p>Tarefas Concluídas</p>
+                        <p>0</p>
+                    </div>
+
+                    <div id="meta diaria">
+                        <p>Meta diária</p>
+                        <p>0%</p>
+                    </div>
+
+                    <div id="Sessoes finalizadas" class="grafico-sessoes">
+                        <p>Sessões Finalizadas</p>
+                        <button id="limpar-historico">Limpar histórico</button>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section id="aba-conta" class="aba">
+                
+            </section>
         </main>
+
+        <nav class="navegacao-inferior">
+
+        </nav>
 </body>
 </html>

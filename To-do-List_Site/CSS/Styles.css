@@ -1,0 +1,1252 @@
+/* ==========================================================================
+   TO DO FOCUS - FOLHA DE ESTILOS PRINCIPAL (CSS3 PURO)
+   Projeto: Lista de Tarefas + Cronômetro Pomodoro
+   ========================================================================== */
+
+/* ==========================================================================
+   1. VARIÁVEIS GLOBAIS (:root) E RESET
+   ========================================================================== */
+:root {
+    /* Cores dinâmicas do tema (atualizadas via JavaScript ao trocar de tema) */
+    --cor-fundo: #D49A89;
+    --cor-texto-fundo: #241B18;
+    --cor-subtexto-fundo: rgba(36, 27, 24, 0.78);
+
+    /* Superfícies e textos internos dos cartões */
+    --cor-cartao: #FFFFFF;
+    --cor-superficie-suave: #FAF6F4;
+    --cor-borda: #EAE1DC;
+    --cor-texto: #231F20;
+    --cor-texto-suave: #6C635F;
+
+    /* Cores de destaque e feedback */
+    --cor-primaria: #F97316;
+    --cor-primaria-hover: #EA580C;
+    --cor-primaria-suave: #FFF3E8;
+    --cor-sucesso: #15803D;
+    --cor-sucesso-suave: #ECFDF3;
+    --cor-perigo: #DC2626;
+    --cor-perigo-suave: #FEF2F2;
+    --cor-aviso: #B45309;
+
+    /* Formas, sombras e tipografia */
+    --raio-cartao: 20px;
+    --raio-campo: 12px;
+    --sombra-cartao: 0 12px 32px rgba(28, 18, 15, 0.12), 0 2px 6px rgba(28, 18, 15, 0.06);
+    --sombra-flutuante: 0 14px 36px rgba(24, 16, 14, 0.24);
+    --transicao: 0.2s ease;
+    --fonte-principal: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Reset básico para manter tamanhos previsíveis em todos os navegadores */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--fonte-principal);
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    min-height: 100vh;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.35s ease;
+}
+
+button,
+input {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+button:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--cor-primaria);
+    outline-offset: 2px;
+}
+
+ul {
+    list-style: none;
+}
+
+/* ==========================================================================
+   2. CABEÇALHO (.cabecalho)
+   ========================================================================== */
+.cabecalho {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 20px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.cabecalho-marca h1 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--cor-texto-fundo);
+    line-height: 1.2;
+    transition: color 0.3s ease;
+}
+
+.cabecalho-marca p {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--cor-subtexto-fundo);
+    margin-top: 2px;
+    transition: color 0.3s ease;
+}
+
+/* Botão único "Tema" à direita do cabeçalho */
+.tema-botao {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background-color: var(--cor-cartao);
+    color: var(--cor-texto);
+    font-weight: 600;
+    font-size: 0.92rem;
+    border-radius: 999px;
+    box-shadow: 0 6px 18px rgba(24, 16, 14, 0.14);
+    transition: transform var(--transicao), box-shadow var(--transicao), background-color var(--transicao);
+}
+
+.tema-botao img {
+    display: block;
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.tema-botao:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(24, 16, 14, 0.18);
+}
+
+.tema-botao:active {
+    transform: translateY(0);
+}
+
+/* ==========================================================================
+   3. CONTAINER PRINCIPAL, ABAS (SPA) E CARTÕES BASE
+   ========================================================================== */
+.conteudo-principal {
+    max-width: 1100px;
+    margin: 0 auto;
+    /* Espaço extra na base para a barra inferior fixa não cobrir o conteúdo */
+    padding: 0 20px 128px;
+}
+
+/* Todas as abas começam escondidas; só .aba.ativa aparece */
+.aba {
+    display: none;
+}
+
+.aba.ativa {
+    display: block;
+    animation: surgirSuave 0.24s ease;
+}
+
+/* Aba 1 usa CSS Grid com destaque visual maior (1.6fr) para o cronômetro */
+#aba-principal.ativa {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+@keyframes surgirSuave {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilo padrão dos cartões brancos */
+.cartao {
+    background-color: var(--cor-cartao);
+    border-radius: var(--raio-cartao);
+    padding: 28px;
+    box-shadow: var(--sombra-cartao);
+}
+
+.cabecalho-aba {
+    margin-bottom: 20px;
+}
+
+.cabecalho-aba h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--cor-texto-fundo);
+    transition: color 0.3s ease;
+}
+
+.cabecalho-aba p {
+    font-size: 0.94rem;
+    color: var(--cor-subtexto-fundo);
+    margin-top: 2px;
+    transition: color 0.3s ease;
+}
+
+.cabecalho-cartao {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.cabecalho-cartao h2,
+.cabecalho-cartao h3 {
+    font-size: 1.12rem;
+    font-weight: 700;
+    color: var(--cor-texto);
+}
+
+.contador-tarefas {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--cor-texto-suave);
+    background-color: var(--cor-superficie-suave);
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   4. BOTÕES REUTILIZÁVEIS
+   ========================================================================== */
+.btn-primario {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 24px;
+    background-color: var(--cor-primaria);
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-radius: var(--raio-campo);
+    box-shadow: 0 6px 16px rgba(249, 115, 22, 0.28);
+    transition: background-color var(--transicao), transform var(--transicao), box-shadow var(--transicao);
+}
+
+.btn-primario:hover:not(:disabled) {
+    background-color: var(--cor-primaria-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(234, 88, 12, 0.34);
+}
+
+.btn-primario:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-secundario {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 20px;
+    background-color: var(--cor-superficie-suave);
+    color: var(--cor-texto);
+    font-weight: 600;
+    font-size: 0.94rem;
+    border-radius: var(--raio-campo);
+    border: 1px solid var(--cor-borda);
+    transition: background-color var(--transicao), border-color var(--transicao), transform var(--transicao);
+}
+
+.btn-secundario:hover:not(:disabled) {
+    background-color: #F2EAE6;
+    border-color: #DACBC4;
+    transform: translateY(-1px);
+}
+
+.btn-primario:disabled,
+.btn-secundario:disabled {
+    opacity: 0.48;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-discreto {
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--cor-texto-suave);
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px dashed var(--cor-borda);
+    transition: color var(--transicao), border-color var(--transicao), background-color var(--transicao);
+}
+
+.btn-discreto:hover {
+    color: var(--cor-primaria);
+    border-color: var(--cor-primaria);
+    background-color: var(--cor-primaria-suave);
+}
+
+.btn-perigo-suave {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--cor-perigo);
+    background-color: var(--cor-perigo-suave);
+    padding: 7px 13px;
+    border-radius: 10px;
+    transition: background-color var(--transicao), color var(--transicao);
+}
+
+.btn-perigo-suave:hover {
+    background-color: #FEE2E2;
+}
+
+.btn-perigo-suave.confirmando {
+    background-color: var(--cor-perigo);
+    color: #FFFFFF;
+}
+
+.btn-largura-total {
+    width: 100%;
+}
+
+/* ==========================================================================
+   5. CARTÃO DO CRONÔMETRO POMODORO (#cartao-timer)
+   ========================================================================== */
+#cartao-timer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 36px 32px 32px;
+}
+
+.topo-timer {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.etiqueta-timer {
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background-color: var(--cor-superficie-suave);
+    color: var(--cor-texto-suave);
+    transition: background-color var(--transicao), color var(--transicao);
+}
+
+.etiqueta-timer.rodando {
+    background-color: var(--cor-primaria-suave);
+    color: var(--cor-primaria-hover);
+}
+
+.indicador-ciclo {
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--cor-texto-suave);
+}
+
+#tarefa-ativa {
+    font-size: 1.08rem;
+    font-weight: 600;
+    color: var(--cor-texto-suave);
+    background-color: var(--cor-superficie-suave);
+    padding: 10px 18px;
+    border-radius: 12px;
+    max-width: 100%;
+    word-break: break-word;
+    margin-bottom: 26px;
+    transition: background-color var(--transicao), color var(--transicao);
+}
+
+#tarefa-ativa.tem-tarefa {
+    background-color: var(--cor-primaria-suave);
+    color: #9A3412;
+}
+
+/* Números grandes com largura tabular para não tremerem a cada segundo */
+#visor-timer {
+    font-size: clamp(4.2rem, 8.5vw, 6.4rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--cor-texto);
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 28px;
+    user-select: none;
+}
+
+/* Barra de progresso do ciclo */
+.barra-progresso-trilha {
+    width: 100%;
+    max-width: 440px;
+    height: 8px;
+    background-color: var(--cor-superficie-suave);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.barra-progresso-preenchimento {
+    height: 100%;
+    width: 0%;
+    background-color: var(--cor-primaria);
+    border-radius: 999px;
+    transition: width 0.35s ease;
+}
+
+.botoes-timer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.botoes-timer button {
+    min-width: 118px;
+}
+
+.acoes-extras-timer {
+    margin-top: 22px;
+    padding-top: 18px;
+    width: 100%;
+    border-top: 1px solid var(--cor-borda);
+    display: flex;
+    justify-content: center;
+}
+
+/* ==========================================================================
+   6. FORMULÁRIO E LISTA DE TAREFAS (#cartao-tarefas)
+   ========================================================================== */
+#cartao-tarefas {
+    padding: 24px;
+}
+
+.form-tarefa {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background-color: var(--cor-superficie-suave);
+    padding: 16px;
+    border-radius: 14px;
+    border: 1px solid var(--cor-borda);
+    margin-bottom: 20px;
+}
+
+.campo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.campo-form label {
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--cor-texto);
+}
+
+.campo-form input[type="text"],
+.campo-form input[type="number"] {
+    width: 100%;
+    padding: 10px 13px;
+    border: 1.5px solid var(--cor-borda);
+    border-radius: var(--raio-campo);
+    background-color: var(--cor-cartao);
+    color: var(--cor-texto);
+    font-size: 0.94rem;
+    transition: border-color var(--transicao), box-shadow var(--transicao);
+}
+
+.campo-form input:focus {
+    outline: none;
+    border-color: var(--cor-primaria);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.16);
+}
+
+.dica-campo {
+    font-size: 0.76rem;
+    color: var(--cor-texto-suave);
+}
+
+.linha-campos-duplos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+/* Lista de tarefas */
+.lista-tarefas {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 440px;
+    overflow-y: auto;
+    padding-right: 2px;
+}
+
+.item-tarefa {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+    border-radius: 14px;
+    border: 1.5px solid var(--cor-borda);
+    background-color: var(--cor-cartao);
+    transition: border-color var(--transicao), background-color var(--transicao), transform var(--transicao);
+}
+
+.item-tarefa:hover {
+    border-color: #D8C7BF;
+}
+
+/* Destaque para a tarefa atualmente carregada no cronômetro */
+.item-tarefa.em-foco {
+    border-color: var(--cor-primaria);
+    background-color: var(--cor-primaria-suave);
+}
+
+/* Estilo visual de tarefa concluída */
+.item-tarefa.concluida {
+    background-color: var(--cor-superficie-suave);
+    opacity: 0.76;
+}
+
+.item-tarefa-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.item-tarefa-titulo {
+    font-size: 0.96rem;
+    font-weight: 700;
+    color: var(--cor-texto);
+    word-break: break-word;
+    line-height: 1.35;
+}
+
+.item-tarefa.concluida .item-tarefa-titulo {
+    text-decoration: line-through;
+    color: var(--cor-texto-suave);
+}
+
+.etiqueta-foco {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--cor-primaria-hover);
+    background-color: #FFFFFF;
+    padding: 3px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.item-tarefa-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--cor-texto-suave);
+}
+
+.item-tarefa-meta span {
+    background-color: var(--cor-superficie-suave);
+    padding: 3px 9px;
+    border-radius: 999px;
+}
+
+.item-tarefa.em-foco .item-tarefa-meta span {
+    background-color: rgba(255, 255, 255, 0.85);
+}
+
+.item-tarefa-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.btn-acao-tarefa {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 6px 11px;
+    border-radius: 8px;
+    transition: background-color var(--transicao), color var(--transicao);
+}
+
+.btn-focar {
+    background-color: var(--cor-primaria);
+    color: #FFFFFF;
+}
+
+.btn-focar:hover {
+    background-color: var(--cor-primaria-hover);
+}
+
+.btn-concluir {
+    background-color: var(--cor-sucesso-suave);
+    color: var(--cor-sucesso);
+}
+
+.btn-concluir:hover {
+    background-color: #DCFCE7;
+}
+
+.btn-excluir {
+    background-color: var(--cor-perigo-suave);
+    color: var(--cor-perigo);
+    margin-left: auto;
+}
+
+.btn-excluir:hover {
+    background-color: #FEE2E2;
+}
+
+/* Mensagem amigável quando listas estão vazias */
+.estado-vazio {
+    text-align: center;
+    padding: 28px 16px;
+    color: var(--cor-texto-suave);
+    font-size: 0.9rem;
+    background-color: var(--cor-superficie-suave);
+    border-radius: 14px;
+    border: 1px dashed var(--cor-borda);
+}
+
+/* ==========================================================================
+   7. ABA HISTÓRICO (#aba-historico)
+   ========================================================================== */
+.blocos {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.bloco-resumo {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rotulo-dado {
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--cor-texto-suave);
+}
+
+.valor-dado {
+    font-size: 1.85rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--cor-texto);
+    font-variant-numeric: tabular-nums;
+}
+
+.barra-meta-trilha {
+    width: 100%;
+    height: 6px;
+    background-color: var(--cor-superficie-suave);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 4px;
+}
+
+.barra-meta-preenchimento {
+    height: 100%;
+    width: 0%;
+    background-color: var(--cor-primaria);
+    border-radius: 999px;
+    transition: width 0.4s ease;
+}
+
+.grade-historico-detalhes {
+    display: grid;
+    grid-template-columns: 1fr 1.25fr;
+    gap: 24px;
+    align-items: start;
+}
+
+/* Gráfico de barras simples dos últimos 7 dias */
+.grafico-semanal {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    align-items: end;
+    height: 190px;
+    padding-top: 20px;
+}
+
+.coluna-dia {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    height: 100%;
+    justify-content: flex-end;
+}
+
+.valor-dia {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--cor-texto-suave);
+    font-variant-numeric: tabular-nums;
+}
+
+.barra-dia-trilha {
+    width: 100%;
+    max-width: 34px;
+    height: 120px;
+    background-color: var(--cor-superficie-suave);
+    border-radius: 10px;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+}
+
+.barra-dia-preenchimento {
+    width: 100%;
+    background-color: var(--cor-primaria);
+    border-radius: 10px 10px 4px 4px;
+    min-height: 0;
+    transition: height 0.4s ease;
+}
+
+.rotulo-dia {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--cor-texto-suave);
+    text-transform: capitalize;
+}
+
+.coluna-dia.hoje .rotulo-dia,
+.coluna-dia.hoje .valor-dia {
+    color: var(--cor-primaria-hover);
+    font-weight: 800;
+}
+
+/* Lista de sessões finalizadas */
+.lista-historico {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.item-historico {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background-color: var(--cor-superficie-suave);
+    border: 1px solid var(--cor-borda);
+}
+
+.item-historico-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.item-historico-titulo {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--cor-texto);
+    word-break: break-word;
+}
+
+.item-historico-data {
+    font-size: 0.78rem;
+    color: var(--cor-texto-suave);
+}
+
+.item-historico-minutos {
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: var(--cor-primaria-hover);
+    background-color: var(--cor-primaria-suave);
+    padding: 5px 11px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   8. ABA CONTA E CONFIGURAÇÕES (#aba-conta)
+   ========================================================================== */
+.config-conta {
+    max-width: 660px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.cartao-perfil {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.avatar-usuario {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: var(--cor-primaria);
+    color: #FFFFFF;
+    font-size: 1.5rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.nome-usuario {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--cor-texto);
+}
+
+.meta-usuario {
+    font-size: 0.9rem;
+    color: var(--cor-texto-suave);
+    margin-top: 2px;
+}
+
+.form-configuracoes {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.form-configuracoes h3 {
+    font-size: 1.08rem;
+    font-weight: 700;
+    color: var(--cor-texto);
+}
+
+.campo-alternador {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px;
+    background-color: var(--cor-superficie-suave);
+    border-radius: 14px;
+    border: 1px solid var(--cor-borda);
+}
+
+.rotulo-alternador {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--cor-texto);
+    display: block;
+    cursor: pointer;
+}
+
+/* Interruptor (toggle switch) em CSS puro */
+.interruptor {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+    flex-shrink: 0;
+}
+
+.interruptor input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.deslizante {
+    position: absolute;
+    inset: 0;
+    background-color: #D6CBC5;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background-color var(--transicao);
+}
+
+.deslizante::before {
+    content: "";
+    position: absolute;
+    height: 22px;
+    width: 22px;
+    left: 3px;
+    bottom: 3px;
+    background-color: #FFFFFF;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: transform var(--transicao);
+}
+
+.interruptor input:checked + .deslizante {
+    background-color: var(--cor-primaria);
+}
+
+.interruptor input:checked + .deslizante::before {
+    transform: translateX(22px);
+}
+
+.interruptor input:focus-visible + .deslizante {
+    outline: 2px solid var(--cor-primaria);
+    outline-offset: 2px;
+}
+
+.acoes-conta {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 6px;
+}
+
+/* ==========================================================================
+   9. BARRA DE NAVEGAÇÃO INFERIOR FIXA (.navegacao-inferior)
+   ========================================================================== */
+.navegacao-inferior {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px;
+    background-color: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    border-radius: 999px;
+    box-shadow: var(--sombra-flutuante);
+    backdrop-filter: blur(10px);
+}
+
+.btn-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 20px;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--cor-texto-suave);
+    transition: background-color var(--transicao), color var(--transicao), transform var(--transicao);
+    white-space: nowrap;
+}
+
+.btn-nav:hover:not(.ativa) {
+    background-color: var(--cor-superficie-suave);
+    color: var(--cor-texto);
+}
+
+.btn-nav.ativa {
+    background-color: var(--cor-primaria);
+    color: #FFFFFF;
+    box-shadow: 0 6px 14px rgba(249, 115, 22, 0.32);
+}
+
+/* ==========================================================================
+   10. MODAL FLUTUANTE DE TEMAS (#modal-tema)
+   ========================================================================== */
+.modal-tema {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    background-color: rgba(24, 16, 14, 0.48);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-tema.aberto {
+    display: flex;
+    animation: surgirSuave 0.2s ease;
+}
+
+.modal-tema-conteudo {
+    background-color: var(--cor-cartao);
+    border-radius: var(--raio-cartao);
+    padding: 26px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: var(--sombra-flutuante);
+}
+
+.modal-tema-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.modal-tema-cabecalho h3 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--cor-texto);
+}
+
+.modal-tema-subtitulo {
+    font-size: 0.86rem;
+    color: var(--cor-texto-suave);
+    margin-top: 2px;
+}
+
+.btn-fechar-modal {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background-color: var(--cor-superficie-suave);
+    color: var(--cor-texto);
+    font-size: 1.35rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color var(--transicao);
+}
+
+.btn-fechar-modal:hover {
+    background-color: #EBE1DC;
+}
+
+/* Grade de 12 botões circulares de cores */
+.grade-temas {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px 12px;
+    justify-items: center;
+}
+
+.item-tema {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-cor-tema {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14), inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    font-weight: 800;
+    font-size: 1.05rem;
+    transition: transform var(--transicao), box-shadow var(--transicao), border-color var(--transicao);
+}
+
+.btn-cor-tema:hover {
+    transform: scale(1.08);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+}
+
+.btn-cor-tema.selecionado {
+    border-color: var(--cor-primaria);
+    transform: scale(1.06);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.24);
+}
+
+.nome-cor-tema {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--cor-texto-suave);
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* ==========================================================================
+   11. NOTIFICAÇÕES TOAST (#container-toast)
+   ========================================================================== */
+.container-toast {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    max-width: calc(100% - 32px);
+    pointer-events: none;
+}
+
+.toast {
+    background-color: #231F20;
+    color: #FFFFFF;
+    padding: 11px 18px;
+    border-radius: 14px;
+    font-size: 0.86rem;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: var(--sombra-flutuante);
+    border-left: 4px solid var(--cor-primaria);
+    pointer-events: auto;
+    animation: entrarToast 0.22s ease forwards;
+}
+
+.toast.sucesso {
+    border-left-color: #22C55E;
+}
+
+.toast.aviso {
+    border-left-color: #F59E0B;
+}
+
+.toast.erro {
+    border-left-color: #EF4444;
+}
+
+.toast.saindo {
+    animation: sairToast 0.25s ease forwards;
+}
+
+@keyframes entrarToast {
+    from {
+        opacity: 0;
+        transform: translateY(-14px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes sairToast {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+/* ==========================================================================
+   12. RESPONSIVIDADE (TELAS MENORES QUE 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+    .cabecalho {
+        padding: 20px 16px 16px;
+    }
+
+    .cabecalho-marca h1 {
+        font-size: 1.45rem;
+    }
+
+    .cabecalho-marca p {
+        font-size: 0.86rem;
+    }
+
+    .conteudo-principal {
+        padding: 0 16px 116px;
+    }
+
+    /* Empilha cronômetro e tarefas em coluna única no celular */
+    #aba-principal.ativa {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    #cartao-timer {
+        padding: 26px 20px 24px;
+    }
+
+    .botoes-timer {
+        gap: 10px;
+    }
+
+    .botoes-timer button {
+        flex: 1 1 95px;
+        min-width: 0;
+        padding: 11px 14px;
+    }
+
+    /* Histórico em 2 colunas nos resumos e 1 coluna nos detalhes */
+    .blocos {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .grade-historico-detalhes {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .acoes-conta {
+        flex-direction: column;
+    }
+
+    .acoes-conta button {
+        width: 100%;
+    }
+
+    /* Ajusta a cápsula de navegação para caber confortavelmente no celular */
+    .navegacao-inferior {
+        bottom: 14px;
+        width: calc(100% - 28px);
+        max-width: 390px;
+        justify-content: space-between;
+    }
+
+    .btn-nav {
+        flex: 1;
+        justify-content: center;
+        padding: 10px 12px;
+        font-size: 0.84rem;
+        gap: 6px;
+    }
+}
+
+@media (max-width: 420px) {
+    .grade-temas {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .linha-campos-duplos {
+        grid-template-columns: 1fr;
+    }
+}

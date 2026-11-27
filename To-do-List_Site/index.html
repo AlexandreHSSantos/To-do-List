@@ -3,101 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="To Do Focus - Lista de tarefas integrada a um cronômetro Pomodoro com histórico de estudos e temas personalizáveis.">
     <title>To Do Focus</title>
+
+    <!-- Ícones da aba do navegador (favicons) -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicons/icons8-lista-de-tarefas-cute-color-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicons/icons8-lista-de-tarefas-cute-color-16.png">
+
+    <!-- Fonte limpa e moderna (com fallback para fontes do sistema quando offline) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Folha de estilos principal -->
     <link rel="stylesheet" href="CSS/Styles.css">
 </head>
-
-
 <body>
-    
-    <!-- Bloco 1: CABEÇALHO -->
-     <header class="cabecalho">
-        <div>
+    <!-- Container flutuante para notificações Toast (substitui o alert do navegador) -->
+    <div id="container-toast" class="container-toast" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- BLOCO 1: CABEÇALHO -->
+    <header class="cabecalho">
+        <div class="cabecalho-marca">
             <h1>To Do Focus</h1>
             <p>As grandes ações acontecem com pequenos passos</p>
         </div>
-            <button class="tema-botao" id="tema-botao"><link rel="shortcut icon" href="favicons/icons8-cor-32.png" type="image/x-icon"></button>
-        </header>
 
-        <!-- BLOCO 2: CONTEÚDO PRINCIPAL (AS 3 ABAS) -->
+        <button type="button" class="tema-botao" id="tema-botao" aria-haspopup="dialog" aria-expanded="false">
+            <img src="favicons/icons8-cor-32.png" alt="" width="20" height="20" aria-hidden="true">
+            <span>Tema</span>
+        </button>
+    </header>
 
-        <main>
+    <!-- BLOCO 2: CONTEÚDO PRINCIPAL (AS 3 ABAS SPA) -->
+    <main class="conteudo-principal">
 
-            <section id="aba-principal" class="aba">
+        <!-- ABA 1: PRINCIPAL (CRONÔMETRO + TAREFAS) -->
+        <section id="aba-principal" class="aba ativa" aria-label="Cronômetro e lista de tarefas">
 
-                <section id="cartao-timer" class="cartao">
-                    <p id="tarefa-ativa">Nenhuma tarefa selecionada</p>
-
-                    <div id="visor-timer">25:00</div>
-
-                    <div class="botoes-timer">
-                        <button>Iniciar</button>
-                        <button>Pausar</button>
-                        <button>Zerar</button>
-
-                    </div>
-                </section>
-
-                <section id="cartao-tarefas" class="cartao">
-                    <form id="form-tarefa"></form>
-                    <ul id="lista-tarefas"></ul>
-                </section>
-
-            </section>
-
-            <section id="aba-historico" class="aba">
-
-                <h1>To Do Focus - Histórico</h1>
-                <p>Seus dados de estudos</p>
-                
-                <div id="blocos-dados" class="blocos">
-
-                    <div id="minutos focados">
-                        <p>Minutos Focados</p>
-                        <p>0 min</p>
-                    </div> 
-
-                    <div id="ciclos concluidos">
-                        <p>Ciclos Concluídos</p>
-                        <p>0</p>
-                    </div>
-                    
-                    <div id="tarefas concluídas">
-                        <p>Tarefas Concluídas</p>
-                        <p>0</p>
-                    </div>
-
-                    <div id="meta diaria">
-                        <p>Meta diária</p>
-                        <p>0%</p>
-                    </div>
-
-                    <div id="Sessoes finalizadas" class="grafico-sessoes">
-                        <p>Sessões Finalizadas</p>
-                        <button id="limpar-historico">Limpar histórico</button>
-                    </div>
-
+            <!-- Cartão do Cronômetro Pomodoro (coluna esquerda, maior destaque) -->
+            <section id="cartao-timer" class="cartao" aria-label="Cronômetro Pomodoro">
+                <div class="topo-timer">
+                    <span id="etiqueta-status-timer" class="etiqueta-timer">Pronto para focar</span>
+                    <span id="indicador-ciclo" class="indicador-ciclo">Ciclo 1 de 1</span>
                 </div>
 
+                <p id="tarefa-ativa">Nenhuma tarefa selecionada</p>
+
+                <div id="visor-timer" role="timer" aria-live="off">25:00</div>
+
+                <!-- Barra de progresso visual do ciclo atual -->
+                <div class="barra-progresso-trilha" aria-hidden="true">
+                    <div id="barra-progresso-timer" class="barra-progresso-preenchimento"></div>
+                </div>
+
+                <div class="botoes-timer">
+                    <button type="button" id="btn-iniciar" class="btn-primario">Iniciar</button>
+                    <button type="button" id="btn-pausar" class="btn-secundario" disabled>Pausar</button>
+                    <button type="button" id="btn-zerar" class="btn-secundario">Zerar</button>
+                </div>
+
+                <!-- Botão discreto para testar a conclusão de ciclo sem aguardar 25 minutos -->
+                <div class="acoes-extras-timer">
+                    <button
+                        type="button"
+                        id="btn-concluir-ciclo"
+                        class="btn-discreto"
+                        title="Finaliza o ciclo atual imediatamente para testar som, histórico e avanço de ciclos"
+                    >
+                        Concluir Ciclo
+                    </button>
+                </div>
             </section>
 
-            <section id="aba-conta" class="aba">
+            <!-- Cartão de Tarefas (coluna direita, mais compacto) -->
+            <section id="cartao-tarefas" class="cartao" aria-label="Gerenciamento de tarefas">
+                <div class="cabecalho-cartao">
+                    <h2>Suas Tarefas</h2>
+                    <span id="contador-tarefas" class="contador-tarefas">0 pendentes</span>
+                </div>
 
-                <h1>To Do Focus - Conta e Configurações</h1>
+                <!-- Formulário para criar novas tarefas -->
+                <form id="form-tarefa" class="form-tarefa" novalidate>
+                    <div class="campo-form">
+                        <label for="input-titulo">Nova tarefa</label>
+                        <input
+                            type="text"
+                            id="input-titulo"
+                            name="titulo"
+                            placeholder="Ex: Estudar Flask e banco de dados"
+                            maxlength="80"
+                            required
+                        >
+                    </div>
+
+                    <div class="linha-campos-duplos">
+                        <div class="campo-form">
+                            <label for="input-tempo">Tempo (min)</label>
+                            <input
+                                type="number"
+                                id="input-tempo"
+                                name="tempo_minutos"
+                                min="5"
+                                max="60"
+                                step="5"
+                                value="25"
+                                required
+                            >
+                            <small class="dica-campo">De 5 em 5 (5 a 60)</small>
+                        </div>
+
+                        <div class="campo-form">
+                            <label for="input-ciclos">Ciclos</label>
+                            <input
+                                type="number"
+                                id="input-ciclos"
+                                name="ciclos"
+                                min="1"
+                                max="10"
+                                step="1"
+                                value="1"
+                                required
+                            >
+                            <small class="dica-campo">De 1 a 10 ciclos</small>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btn-adicionar-tarefa" class="btn-primario btn-largura-total">
+                        + Adicionar tarefa
+                    </button>
+                </form>
+
+                <!-- Lista onde os itens de tarefa são inseridos pelo JavaScript -->
+                <ul id="lista-tarefas" class="lista-tarefas" aria-live="polite"></ul>
+            </section>
+
+        </section>
+
+        <!-- ABA 2: HISTÓRICO -->
+        <section id="aba-historico" class="aba" aria-label="Histórico de foco">
+            <div class="cabecalho-aba">
+                <h2>To Do Focus - Histórico</h2>
+                <p>Seus dados de estudos e sessões concluídas</p>
+            </div>
+
+            <!-- Cartões de resumo -->
+            <div id="blocos-dados" class="blocos">
+                <div id="minutos-focados" class="cartao bloco-resumo">
+                    <p class="rotulo-dado">Minutos Focados</p>
+                    <p id="valor-minutos-focados" class="valor-dado">0 min</p>
+                </div>
+
+                <div id="ciclos-concluidos" class="cartao bloco-resumo">
+                    <p class="rotulo-dado">Ciclos Concluídos</p>
+                    <p id="valor-ciclos-concluidos" class="valor-dado">0</p>
+                </div>
+
+                <div id="tarefas-concluidas" class="cartao bloco-resumo">
+                    <p class="rotulo-dado">Tarefas Concluídas</p>
+                    <p id="valor-tarefas-concluidas" class="valor-dado">0</p>
+                </div>
+
+                <div id="meta-diaria" class="cartao bloco-resumo">
+                    <p class="rotulo-dado">Meta Diária (Hoje)</p>
+                    <p id="valor-meta-diaria" class="valor-dado">0%</p>
+                    <div class="barra-meta-trilha" aria-hidden="true">
+                        <div id="barra-meta-diaria" class="barra-meta-preenchimento"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resumo semanal + lista de sessões -->
+            <div class="grade-historico-detalhes">
+                <div id="resumo-semanal-cartao" class="cartao">
+                    <div class="cabecalho-cartao">
+                        <h3>Resumo dos Últimos 7 Dias</h3>
+                        <span id="total-semanal" class="contador-tarefas">0 min na semana</span>
+                    </div>
+                    <div id="grafico-semanal" class="grafico-semanal" aria-label="Resumo semanal em minutos"></div>
+                </div>
+
+                <div id="sessoes-finalizadas" class="cartao grafico-sessoes">
+                    <div class="cabecalho-cartao">
+                        <h3>Sessões Finalizadas</h3>
+                        <button type="button" id="limpar-historico" class="btn-perigo-suave">Limpar histórico</button>
+                    </div>
+                    <ul id="lista-historico" class="lista-historico"></ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABA 3: CONTA E CONFIGURAÇÕES -->
+        <section id="aba-conta" class="aba" aria-label="Conta e configurações">
+            <div class="cabecalho-aba">
+                <h2>To Do Focus - Conta e Configurações</h2>
                 <p>Suas melhores configurações para focar</p>
+            </div>
 
-                <div id="configuracao-conta" class="config-conta">
-                    <div id="dados-usuario">
-                        <p id="nome">Matheus</p>
-                        
+            <div id="configuracao-conta" class="config-conta">
+                <!-- Cartão de identificação do usuário -->
+                <div id="dados-usuario" class="cartao cartao-perfil">
+                    <div id="avatar-usuario" class="avatar-usuario" aria-hidden="true">M</div>
+                    <div class="info-usuario">
+                        <p id="nome" class="nome-usuario">Matheus</p>
+                        <p id="resumo-meta-usuario" class="meta-usuario">Meta diária: 60 min de foco</p>
                     </div>
-                    
                 </div>
-            </section>
-        </main>
 
-        <nav class="navegacao-inferior">
+                <!-- Formulário de preferências -->
+                <form id="form-configuracoes" class="cartao form-configuracoes" novalidate>
+                    <h3>Preferências de Foco</h3>
 
-        </nav>
+                    <div class="campo-form">
+                        <label for="input-nome-usuario">Nome do usuário</label>
+                        <input
+                            type="text"
+                            id="input-nome-usuario"
+                            name="nome_usuario"
+                            maxlength="40"
+                            placeholder="Como você prefere ser chamado?"
+                            required
+                        >
+                    </div>
+
+                    <div class="campo-form">
+                        <label for="input-meta-diaria">Meta diária de foco (em minutos)</label>
+                        <input
+                            type="number"
+                            id="input-meta-diaria"
+                            name="meta_diaria"
+                            min="10"
+                            max="600"
+                            step="5"
+                            value="60"
+                            required
+                        >
+                        <small class="dica-campo">Usada para calcular seu progresso diário na aba Histórico</small>
+                    </div>
+
+                    <div class="campo-alternador">
+                        <div>
+                            <label for="input-som-ativo" class="rotulo-alternador">Som do alarme</label>
+                            <p class="dica-campo">Aviso sonoro suave ao concluir cada ciclo</p>
+                        </div>
+                        <label class="interruptor" aria-label="Ligar ou desligar som do alarme">
+                            <input type="checkbox" id="input-som-ativo" checked>
+                            <span class="deslizante"></span>
+                        </label>
+                    </div>
+
+                    <div class="acoes-conta">
+                        <button type="button" id="btn-testar-som" class="btn-secundario">Testar som</button>
+                        <button type="submit" id="btn-salvar-conta" class="btn-primario">Salvar configurações</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- BLOCO 3: BARRA DE NAVEGAÇÃO INFERIOR FIXA -->
+    <nav class="navegacao-inferior" aria-label="Navegação principal">
+        <button type="button" class="btn-nav ativa" data-aba="aba-principal" aria-current="page">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="9"></circle>
+                <polyline points="12 7 12 12 15 15"></polyline>
+            </svg>
+            <span>Principal</span>
+        </button>
+
+        <button type="button" class="btn-nav" data-aba="aba-historico">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+            <span>Histórico</span>
+        </button>
+
+        <button type="button" class="btn-nav" data-aba="aba-conta">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span>Conta</span>
+        </button>
+    </nav>
+
+    <!-- BLOCO 4: MODAL FLUTUANTE DE TEMAS -->
+    <div id="modal-tema" class="modal-tema" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-tema" aria-hidden="true">
+        <div class="modal-tema-conteudo">
+            <div class="modal-tema-cabecalho">
+                <div>
+                    <h3 id="titulo-modal-tema">Escolha um Tema</h3>
+                    <p class="modal-tema-subtitulo">Personalize a cor de fundo do seu ambiente de foco</p>
+                </div>
+                <button type="button" id="btn-fechar-modal" class="btn-fechar-modal" aria-label="Fechar janela de temas">&times;</button>
+            </div>
+
+            <!-- Os 12 botões circulares são criados dinamicamente pelo Scripts.js -->
+            <div id="grade-temas" class="grade-temas"></div>
+        </div>
+    </div>
+
+    <!-- Lógica principal da aplicação -->
+    <script src="Scripts.js" defer></script>
 </body>
 </html>
